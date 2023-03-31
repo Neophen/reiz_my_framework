@@ -4,8 +4,6 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Framework Lesson 1: It all starts with the data</title>
-
-    <script src="//unpkg.com/alpinejs" defer></script>
   </head>
   <body>
     <div x-data="{count: 0}">
@@ -13,5 +11,14 @@
       <button @click="count -= 1">-</button>
       <span x-text="count"></span>
     </div>
+
+    <script>
+      let root = document.querySelector("[x-data]");
+      let data = getInitialData(root);
+
+      function getInitialData(element) {
+        return eval(`(${element.getAttribute("x-data")})`);
+      }
+    </script>
   </body>
 </html>
