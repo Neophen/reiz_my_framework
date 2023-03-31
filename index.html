@@ -3,9 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Framework Lesson 1: It all starts with the data</title>
-
-    <script src="//unpkg.com/alpinejs" defer></script>
+    <title>Framework Lesson 2: Bringing The DOM To Life</title>
   </head>
   <body>
     <div x-data="{count: 0}">
@@ -13,5 +11,24 @@
       <button @click="count -= 1">-</button>
       <span x-text="count"></span>
     </div>
+
+    <script>
+      let root = document.querySelector("[x-data]");
+      let data = getInitialData(root);
+      refreshDOM();
+
+      function getInitialData(element) {
+        return eval(`(${element.getAttribute("x-data")})`);
+      }
+
+      // Walk the dom and update it
+      function refreshDOM() {
+        walkDOM(root, (el) => {
+          console.log(el.outerHTML);
+        });
+      }
+
+      function walkDOM(el, callback) {}
+    </script>
   </body>
 </html>

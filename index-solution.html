@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Framework Lesson 1: It all starts with the data</title>
+    <title>Framework Lesson 2: Bringing The DOM To Life</title>
   </head>
   <body>
     <div x-data="{count: 0}">
@@ -18,6 +18,35 @@
 
       function getInitialData(element) {
         return eval(`(${element.getAttribute("x-data")})`);
+      }
+
+      function execute(expression) {
+        return eval(`with(data) {(${expression})}`);
+      }
+
+      // Walk the dom and update it
+      function refreshDOM() {
+        walkDOM(root, (el) => {
+          if (el.hasAttribute("x-text")) {
+            let expression = el.getAttribute("x-text");
+
+            el.innerText = execute(expression);
+          }
+        });
+      }
+
+      refreshDOM();
+
+      function walkDOM(el, callback) {
+        callback(el);
+
+        el = el.firstElementChild;
+
+        while (el) {
+          walkDOM(el, callback);
+
+          el = el.nextElementSibling;
+        }
       }
     </script>
   </body>
