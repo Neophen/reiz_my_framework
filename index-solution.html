@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Framework Lesson 2: Bringing The DOM To Life</title>
+    <title>Framework Lesson 3: Making Things Reactive</title>
   </head>
   <body>
     <div x-data="{count: 0}">
@@ -14,7 +14,23 @@
 
     <script>
       let root = document.querySelector("[x-data]");
-      let data = getInitialData(root);
+      let data = observe(getInitialData(root));
+
+      function observe(object) {
+        return new Proxy(object, {
+          get(target, key) {
+            console.log("getting...");
+            return target[key];
+          },
+          set(target, key, value) {
+            console.log("setting...");
+            target[key] = value;
+            refreshDOM();
+          },
+        });
+      }
+
+      refreshDOM();
 
       function getInitialData(element) {
         return eval(`(${element.getAttribute("x-data")})`);
@@ -24,7 +40,6 @@
         return eval(`with(data) {(${expression})}`);
       }
 
-      // Walk the dom and update it
       function refreshDOM() {
         walkDOM(root, (el) => {
           if (el.hasAttribute("x-text")) {
@@ -34,8 +49,6 @@
           }
         });
       }
-
-      refreshDOM();
 
       function walkDOM(el, callback) {
         callback(el);

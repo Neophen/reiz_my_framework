@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Framework Lesson 2: Bringing The DOM To Life</title>
+    <title>Framework Lesson 3: Making Things Reactive</title>
   </head>
   <body>
     <div x-data="{count: 0}">
@@ -21,14 +21,31 @@
         return eval(`(${element.getAttribute("x-data")})`);
       }
 
-      // Walk the dom and update it
+      function execute(expression) {
+        return eval(`with(data) {(${expression})}`);
+      }
+
       function refreshDOM() {
         walkDOM(root, (el) => {
-          console.log(el.outerHTML);
+          if (el.hasAttribute("x-text")) {
+            let expression = el.getAttribute("x-text");
+
+            el.innerText = execute(expression);
+          }
         });
       }
 
-      function walkDOM(el, callback) {}
+      function walkDOM(el, callback) {
+        callback(el);
+
+        el = el.firstElementChild;
+
+        while (el) {
+          walkDOM(el, callback);
+
+          el = el.nextElementSibling;
+        }
+      }
     </script>
   </body>
 </html>
