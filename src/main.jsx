@@ -1,20 +1,24 @@
-// 1. Import dependencies
-import React from "react";
-import { createRoot } from "react-dom/client";
+// This is meant to be a challenging exercise. It's 100% OK if you can't solve it. Spend 5-10 minutes on it, and then we will continue on with the lesson.
 
-// 2. Create a React element
-const element = React.createElement(
-  "h1",
-  {
-    id: "hello",
-    class: "hello",
-    style: { background: "red" },
-    "wai-aria": "hey",
+// Acceptance criteria:
+
+// A link should be shown in the “Result” pane, linking to wikipedia.org, and with the text “Read more on Wikipedia”.
+// It should work with any element type (eg. anchors, paragraphs, buttons…)
+// It should handle all HTML attributes (eg. href, id, disabled…)
+// The element should contain the text specified under children. children will always be a string.
+
+function render(reactElement, containerDOMElement) {
+  /* Your code here! */
+}
+
+const reactElement = {
+  type: "a",
+  props: {
+    href: "https://wikipedia.org/",
   },
-  "Hello World!"
-);
+  children: "Read more on Wikipedia",
+};
 
-// 3. Render the application
-const container = document.querySelector("#root");
-const root = createRoot(container);
-root.render(element);
+const containerDOMElement = document.querySelector("#root");
+
+render(reactElement, containerDOMElement);
