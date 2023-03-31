@@ -8,7 +8,15 @@
 // The element should contain the text specified under children. children will always be a string.
 
 function render(reactElement, containerDOMElement) {
-  /* Your code here! */
+  const element = document.createElement(reactElement.type);
+  Object.keys(reactElement.props).forEach((key) => {
+    element.setAttribute(key, reactElement.props[key]);
+  });
+
+  const textNode = document.createTextNode(reactElement.children);
+  element.appendChild(textNode);
+
+  containerDOMElement.appendChild(element);
 }
 
 const reactElement = {
