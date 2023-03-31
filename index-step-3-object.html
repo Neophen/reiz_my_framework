@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Framework Lesson 5: Refactoring For Flexibility</title>
+  </head>
+  <body>
+    <div x-data="{count: 0}">
+      <button @click="count += 1" @mouseenter="console.log('hi')">+</button>
+      <button @click="count -= 1">-</button>
+      <span x-text="count"></span>
+      <span x-show="count > 2">Hello</span>
+    </div>
+
+    <script src="/alpine.js"></script>
+  </body>
+</html>

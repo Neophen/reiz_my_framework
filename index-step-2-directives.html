@@ -17,24 +17,30 @@
       // 1. Allow custom event listeners
       // 2. Allow custom directives: Design by wishful thinking, Make the change easy, add the easy change
       // 3. Extract separate object
-      let Alpine = {
-        directives: {
-          "x-text": (el, value) => {
-            el.innerText = value;
-          },
-          "x-show": (el, value) => {
-            console.log(value);
-            el.style.display = value ? "block" : "none";
-          },
-        },
 
-        start: () => {
-          let root = document.querySelector("[x-data]");
-          let data = observe(getInitialData(root));
-          registerListeners();
-          refreshDOM();
+      const directives = {
+        "x-text": (el, value) => {
+          el.innerText = value;
+        },
+        "x-show": (el, value) => {
+          console.log(value);
+          el.style.display = value ? "block" : "none";
         },
       };
+
+      let root = document.querySelector("[x-data]");
+      let data = observe(getInitialData(root));
+
+      function observe(object) {
+        return new Proxy(object, {
+          set(target, key, value) {
+            target[key] = value;
+            refreshDOM();
+          },
+        });
+      }
+      registerListeners();
+      refreshDOM();
 
       function getInitialData(element) {
         return eval(`(${element.getAttribute("x-data")})`);
