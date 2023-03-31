@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Framework Lesson 3: Making Things Reactive</title>
+    <title>Framework Lesson 4: Event Listening</title>
   </head>
   <body>
     <div x-data="{count: 0}">
@@ -13,8 +13,19 @@
     </div>
 
     <script>
+      // https://github.com/salesforce/observable-membrane
       let root = document.querySelector("[x-data]");
-      let data = getInitialData(root);
+      let data = observe(getInitialData(root));
+
+      function observe(object) {
+        return new Proxy(object, {
+          set(target, key, value) {
+            target[key] = value;
+            refreshDOM();
+          },
+        });
+      }
+      // Register Listeners
       refreshDOM();
 
       function getInitialData(element) {

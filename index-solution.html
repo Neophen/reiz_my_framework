@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Framework Lesson 3: Making Things Reactive</title>
+    <title>Framework Lesson 4: Event Listening</title>
   </head>
   <body>
     <div x-data="{count: 0}">
@@ -19,18 +19,13 @@
 
       function observe(object) {
         return new Proxy(object, {
-          get(target, key) {
-            console.log("getting...");
-            return target[key];
-          },
           set(target, key, value) {
-            console.log("setting...");
             target[key] = value;
             refreshDOM();
           },
         });
       }
-
+      registerListeners();
       refreshDOM();
 
       function getInitialData(element) {
@@ -39,6 +34,16 @@
 
       function execute(expression) {
         return eval(`with(data) {(${expression})}`);
+      }
+
+      function registerListeners() {
+        walkDOM(root, (el) => {
+          if (el.hasAttribute("@click")) {
+            let expression = el.getAttribute("@click");
+
+            el.addEventListener("click", () => execute(expression));
+          }
+        });
       }
 
       function refreshDOM() {
