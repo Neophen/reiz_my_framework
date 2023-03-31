@@ -7,34 +7,26 @@
   </head>
   <body>
     <div x-data="{count: 0}">
-      <button @click="count += 1" @mouseenter="console.log('hi')">+</button>
+      <button @click="count += 1">+</button>
       <button @click="count -= 1">-</button>
       <span x-text="count"></span>
-      <span x-show="count > 2">Hello</span>
     </div>
 
     <script>
-      // 1. Allow custom event listeners
-      // 2. Allow custom directives: Design by wishful thinking, Make the change easy, add the easy change
-      // 3. Extract separate object
-      let Alpine = {
-        directives: {
-          "x-text": (el, value) => {
-            el.innerText = value;
-          },
-          "x-show": (el, value) => {
-            console.log(value);
-            el.style.display = value ? "block" : "none";
-          },
-        },
+      // https://github.com/salesforce/observable-membrane
+      let root = document.querySelector("[x-data]");
+      let data = observe(getInitialData(root));
 
-        start: () => {
-          let root = document.querySelector("[x-data]");
-          let data = observe(getInitialData(root));
-          registerListeners();
-          refreshDOM();
-        },
-      };
+      function observe(object) {
+        return new Proxy(object, {
+          set(target, key, value) {
+            target[key] = value;
+            refreshDOM();
+          },
+        });
+      }
+      registerListeners();
+      refreshDOM();
 
       function getInitialData(element) {
         return eval(`(${element.getAttribute("x-data")})`);
@@ -46,26 +38,21 @@
 
       function registerListeners() {
         walkDOM(root, (el) => {
-          Array.from(el.attributes).forEach((attribute) => {
-            if (!attribute.name.startsWith("@")) {
-              return;
-            }
+          if (el.hasAttribute("@click")) {
+            let expression = el.getAttribute("@click");
 
-            const event = attribute.name.replace("@", "");
-            el.addEventListener(event, () => execute(attribute.value));
-          });
+            el.addEventListener("click", () => execute(expression));
+          }
         });
       }
 
       function refreshDOM() {
         walkDOM(root, (el) => {
-          Array.from(el.attributes).forEach((attribute) => {
-            if (!Object.keys(directives).includes(attribute.name)) {
-              return;
-            }
+          if (el.hasAttribute("x-text")) {
+            let expression = el.getAttribute("x-text");
 
-            directives[attribute.name](el, execute(attribute.value));
-          });
+            el.innerText = execute(expression);
+          }
         });
       }
 
